@@ -1,42 +1,45 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AuthProvider, useAuth } from "../../context/AuthContext";
+import { View, Text, StyleSheet } from "react-native";
+import { useAuth } from "../../context/AuthContext"; // adjust path if needed
 
-import Login from "../../components/authentication/Login";
-import SignUp from "../../components/authentication/SignUp";
-import Dashboard from "../../components/Dashboard";
+export default function HomeScreen() {
+  const { user, logout } = useAuth();
 
-const Stack = createNativeStackNavigator();
-
-function AuthStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="SignUp" component={SignUp} />
-    </Stack.Navigator>
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome to Kinderz 🎉</Text>
+      {user && (
+        <Text style={styles.subtitle}>
+          Logged in as: {user.email} ({user.role})
+        </Text>
+      )}
+      <Text style={styles.logout} onPress={logout}>
+        Logout
+      </Text>
+    </View>
   );
 }
 
-function AppStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Dashboard" component={Dashboard} />
-    </Stack.Navigator>
-  );
-}
-
-function RootNavigator() {
-  const { user } = useAuth();
-  return <>{user ? <AppStack /> : <AuthStack />}</>;
-}
-
-export default function App() {
-  return (
-    <AuthProvider>
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
-    </AuthProvider>
-  );
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  logout: {
+    fontSize: 16,
+    color: "blue",
+    textDecorationLine: "underline",
+  },
+});
